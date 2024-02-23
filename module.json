@@ -1,0 +1,52 @@
+{
+  "id": "impmal-combat-resolve",
+  "title": "Imperium Maledictum - Combat Resolve",
+  "description": "Simple module for FoundryVTT Imperium Maledictum system to handle Resolve and tracking defeated enemies each round during combat.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Marcin Bratek",
+      "email": "github+foundry@bratekmarcin.eu",
+      "discord": "kayne1942"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "impmal",
+        "type": "system",
+        "manifest": "https://github.com/moo-man/ImpMal-FoundryVTT/releases/latest/download/system.json"
+      }
+    ]
+  },    
+  "system": ["impmal"],
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  },
+  "esmodules": [
+    "./resolver.js"
+  ],
+  "styles": [
+    "./resolver.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polski",
+      "path": "lang/pl.json"
+    }
+  ],
+  "url": "https://github.com/Kayne/impmal-combat-resolve",
+  "manifest": "https://github.com/Kayne/impmal-combat-resolve/raw/master/module.json",
+  "download": "https://github.com/Kayne/impmal-combat-resolve/archive/master.zip",
+  "readme": "https://github.com/Kayne/impmal-combat-resolve/blob/master/Readme.md",
+  "changelog": "https://github.com/Kayne/impmal-combat-resolve/blob/master/Changelog.md",
+  "license": "https://github.com/Kayne/impmal-combat-resolve/blob/master/LICENSE",
+  "bugs": "https://github.com/Kayne/impmal-combat-resolve/issues"
+}

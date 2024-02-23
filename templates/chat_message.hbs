@@ -1,0 +1,24 @@
+<div class="impmal test">
+    <h2>{{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.lastRoundSummary"}}</h2>
+    {{#if diffTroops}}
+    <span><strong>{{ diffTroops }}</strong> {{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.troopsDefeated"}}</span>
+    {{/if}}
+    {{#if diffElites}}
+    <span><strong>{{ diffElites }}</strong> {{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.elitesDefeated"}}</span>
+    {{/if}}
+    {{#if diffLeaders}}
+    <span><strong>{{ diffLeaders }}</strong> {{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.leadersDefeated"}}</span>
+    {{/if}}
+    {{#if npcs }}
+    <span>{{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.troopsWithLowerResolve"}}:</span>
+    {{/if}}
+    <div class="targets">
+        <div class="target-list resolver">
+            {{#each npcs}}
+                <div class="target resolver" data-id="{{this.id}}">
+                    <img data-tooltip="{{tokenName this.actor}}" src="{{tokenImg this.actor}}">
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
