@@ -1,11 +1,5 @@
 Hooks.on("combatRound", (combat) => 
 {
-    // Here instead combatStart, because Foundry can be reloaded during fight
-    combat.settings = combat.settings ?? {}; // it was not there on fresh world?
-    combat.settings.previousDefeatedTroops = combat.settings.previousDefeatedTroops ?? 0;
-    combat.settings.previousDefeatedElites = combat.settings.previousDefeatedElites ?? 0;
-    combat.settings.previousDefeatedLeaders = combat.settings.previousDefeatedLeaders ?? 0;
-
     let currentDefeated = combat.combatants.filter( a => a.isDefeated && a.actor.type === 'npc' );
 
     const countElites = game.settings.get('impmal-combat-resolve','countElites');
@@ -14,31 +8,31 @@ Hooks.on("combatRound", (combat) =>
 
     let diffTroops = 0;
     let diffElites = 0;
-    let diffLeaders = 0;    
+    let diffLeaders = 0;
 
     if (countTroops) {
         const defeatedTrops = currentDefeated.map( a => a.actor.system.role === 'troop' ).filter( a => a == true ).length;
-        diffTroops = defeatedTrops - combat.settings.previousDefeatedTroops;
+        diffTroops = defeatedTrops - (game.combat.getFlag( 'impmal-combat-resolve', 'previousDefeatedTroops' ) ?? 0);
         if (diffTroops < 0) {
             diffTroops = 0;
         }
-        combat.settings.previousDefeatedTroops = defeatedTrops;
+        game.combat.setFlag( 'impmal-combat-resolve', 'previousDefeatedTroops', defeatedTrops );
     }
     if (countElites) {
         const defeatedElites = currentDefeated.map( a => a.actor.system.role === 'elite' ).filter( a => a == true ).length;
-        diffElites = defeatedElites - combat.settings.previousDefeatedElites;
+        diffElites = defeatedElites - (game.combat.getFlag( 'impmal-combat-resolve', 'previousDefeatedElites' ) ?? 0);
         if (diffElites < 0) {
             diffElites = 0;
         }
-        combat.settings.previousDefeatedElites = defeatedElites;
+        game.combat.setFlag( 'impmal-combat-resolve', 'previousDefeatedElites', defeatedElites );
     }
     if (countLeaders) {
         const defeatedLeaders = currentDefeated.map( a => a.actor.system.role === 'leader' ).filter( a => a == true ).length;
-        diffLeaders = defeatedLeaders - combat.settings.previousDefeatedLeaders;
+        diffLeaders = defeatedLeaders - (game.combat.getFlag( 'impmal-combat-resolve', 'previousDefeatedLeaders' ) ?? 0);
         if (diffLeaders < 0) {
             diffLeaders = 0;
         }
-        combat.settings.previousDefeatedLeaders = defeatedLeaders;
+        game.combat.setFlag( 'impmal-combat-resolve', 'previousDefeatedLeaders', defeatedLeaders );
     }
 
     if (diffTroops > 0 || diffElites > 0 || diffLeaders > 0) {
