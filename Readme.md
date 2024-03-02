@@ -4,6 +4,7 @@
 ![Foundry Version](https://img.shields.io/badge/dynamic/json.svg?url=https://github.com/kayne/impmal-combat-resolve/releases/latest/download/module.json&label=foundry%20version&query=$.compatibility.verified&colorB=blueviolet)
 ![Downloads](https://img.shields.io/github/downloads/kayne/impmal-combat-resolve/total)
 ![GitHub issues](https://img.shields.io/github/issues/kayne/impmal-combat-resolve?colorB=red)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B0V5J9L)
 
 FoundryVTT module for the Imperium Maledictum system which handles Resolve in combat and helps tracking defeated enemies each round.
 
