@@ -26,7 +26,8 @@
             "leadersDefeated": "Liderów zostało pokonanych.",
             "lastRoundSummary": "Podsumowanie ostatniej rundy",
             "troopsWithLowerResolve": "Trepy z Determinacją równą lub niższą od Przewagi",
-            "currentCombatant": "Determinacja jest równa lub niższa od Przewagi."
+            "currentCombatant": "Determinacja jest równa lub niższa od Przewagi.",
+            "highestResolve": "Najwyższa Determinacja Trepa/Lidera:"
         }
     }
 }

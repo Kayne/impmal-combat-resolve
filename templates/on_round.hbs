@@ -1,12 +1,16 @@
 <div class="impmal test">
     <h2>{{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.lastRoundSummary"}}</h2>
+    <span>{{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.highestResolve"}} <strong>{{ highestLeaderResolve }}</strong>.</span>
     {{#if diffTroops}}
-    <span><strong>{{ diffTroops }}</strong> {{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.troopsDefeated"}}</span>
+    <br>
+    <span><strong>{{ diffTroops }}</strong> {{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.troopsDefeated"}} </span>
     {{/if}}
     {{#if diffElites}}
+    <br>
     <span><strong>{{ diffElites }}</strong> {{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.elitesDefeated"}}</span>
     {{/if}}
     {{#if diffLeaders}}
+    <br>
     <span><strong>{{ diffLeaders }}</strong> {{localize "IMPMAL-COMBAT-RESOLVE.MESSAGES.leadersDefeated"}}</span>
     {{/if}}
 </div>

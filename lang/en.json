@@ -13,9 +13,9 @@
             "countElites": "Count Elites",
             "countLeaders": "Count Leaders",
             "sentToChatNothing": "Nothing",
-            "sentToChatCounters": "Only Counters checks",
-            "sentToChatOnSuperiority": "Only Superiority checks",
-            "sentToChatOnCountersAndSuperiority": "Both Counters and Superiority checks",
+            "sentToChatCounters": "Only Counters",
+            "sentToChatOnSuperiority": "Only Superiority",
+            "sentToChatOnCountersAndSuperiority": "Both Counters and Superiority",
             "checkSuperiority": "Check Superiority",
             "checkSuperiorityHint": "Checks if combatant is below or at Superiority treshold at the turn start."
         },
@@ -27,7 +27,8 @@
             "lastRoundSummary": "Last Round Summary",
             "newTurnSummary": "New Turn Summary",
             "troopsWithLowerResolve": "Troops with Resolve equal to or lower than Superiority",
-            "currentCombatant": "Resolve is equal to or lower than Superiority."
+            "currentCombatant": "Resolve is equal to or lower than Superiority.",
+            "highestResolve": "Highest Troop/Leader Resolve:"
         }
     }
 }

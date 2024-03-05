@@ -45,16 +45,17 @@ Hooks.on("combatRound", (combat) =>
 
     if (diffs.all() > 0) {
         const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
+        const highestLeaderResolve = Math.max( combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && ( a.actor.system.role === 'leader' || a.actor.system.role === 'troop' ) ).map( a => a.actor.system.combat.resolve ) );
         if (sendToChat == 'on_counters' || sendToChat == 'on_counters_and_superiority') {
-            let restNpcs;
-            // TODO count how many Troops defeated against highest Resolve
+            // let restNpcs;
             // const showNPCBelowSuperiority = game.settings.get('impmal-combat-resolve','showNPCBelowSuperiority');
             // if (showNPCBelowSuperiority == 'on_round' || showNPCBelowSuperiority == 'on_round_and_turn') {
                 // restNpcs = combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && a.actor.system.role === 'troop' && a.actor.system.combat.resolve <= game.settings.get("impmal", "superiority") ).map( a => a.token );
             // }
-            ResolveMessage.postToChatOnRound( diffs ) 
+            ResolveMessage.postToChatOnRound( diffs, highestLeaderResolve );
         } else {
             let message = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.inLastRound');
+            message += " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.highestResolve') + " " + highestLeaderResolve + "."
             if (diffs.troops > 0) {
                 message += " " + diffs.troops + " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.troopsDefeated');
             }
@@ -75,7 +76,7 @@ Hooks.on("updateCombat", (combat, data) =>
         return;
     }
     if (game.settings.get('impmal-combat-resolve','checkSuperiority')) {
-        if (data.turn !== 'undefined' || data.round !== 'undefined') // If switching turns or rounds, doesn't matter the direction
+        if (data.turn !== undefined || data.round !== undefined) // If switching turns or rounds, doesn't matter the direction
         {
             if (game.settings.get('impmal-combat-resolve','showNPCBelowSuperiority')) {
                 const combatant = combat.combatant;
@@ -167,12 +168,13 @@ Hooks.on("init", () => {
 
 class ResolveMessage {
 
-    static postToChatOnRound( diffs ) {
+    static postToChatOnRound( diffs, highestLeaderResolve ) {
         const template_file = "modules/impmal-combat-resolve/templates/on_round.hbs";
         const template_data = {
             diffTroops: diffs.troops,
             diffElites: diffs.elites,
-            diffLeaders: diffs.leaders
+            diffLeaders: diffs.leaders,
+            highestLeaderResolve: highestLeaderResolve
         };
         this._postToChat( template_file, template_data );
     }
