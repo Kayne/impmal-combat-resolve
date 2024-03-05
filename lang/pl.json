@@ -1,17 +1,23 @@
 {
     "IMPMAL-COMBAT-RESOLVE": {
         "SETTINGS": {
-            "sentToChat": "Wysyłać do Czatu?",
+            "sentToChat": "Wysyłać do Czatu",
             "sentToChatHint": "Jesli wyłączone, wiadomości pojawią się w powiadomieniach.",
             "showNPCBelowSuperiority": "Wyświetl tokeny Bohaterów Niezalenych",
-            "showNPCBelowSuperiorityHint": "Działa tylko z włączoną opcją `Wysyłać do Czatu?`. Będzie wyświetlać tokeny Trepów, których Determinacja jest równa lub mniejsza od Przewagi. Nie uwzględnia tokenów Elit ani Liderów.",
+            "showNPCBelowSuperiorityHint": "Działa tylko z włączoną opcją `Wysyłać do Czatu`. Wyświetla klikalny token.",
             "chatVisibility": "Widoczność w Czacie",
-            "chatVisibilityHint": "Działa tylko z włączoną opcją `Wysyłać do Czatu?`.",
+            "chatVisibilityHint": "Działa tylko z włączoną opcją `Wysyłać do Czatu`.",
             "chatVisibilityPublic": "Publiczne",
             "chatVisibilityPrivate": "Prywatne",
-            "countTroops": "Liczyć Trepów?",
-            "countElites": "Liczyć Elity?",
-            "countLeaders": "Liczyć Liderów?"
+            "countTroops": "Liczyć Trepów",
+            "countElites": "Liczyć Elity",
+            "countLeaders": "Liczyć Liderów",
+            "sentToChatNothing": "Nic",
+            "sentToChatCounters": "Tylko Liczniki",
+            "sentToChatOnSuperiority": "Tylko Przewagę",
+            "sentToChatOnCountersAndSuperiority": "Liczniki i Przewagę",
+            "checkSuperiority": "Sprawdź Przewagę",
+            "checkSuperiorityHint": "Sprawadza, czy Determinacja przeciwnika, na początku jego tury, jest równa lub niższa od Przewagi."
         },
         "MESSAGES": {
             "inLastRound": "W ostatniej rundzie:",
@@ -19,7 +25,8 @@
             "elitesDefeated": "Elit zostało pokonanych.",
             "leadersDefeated": "Liderów zostało pokonanych.",
             "lastRoundSummary": "Podsumowanie ostatniej rundy",
-            "troopsWithLowerResolve": "Trepy z Determinacją równą lub niższą od Przewagi"
+            "troopsWithLowerResolve": "Trepy z Determinacją równą lub niższą od Przewagi",
+            "currentCombatant": "Determinacja jest równa lub niższa od Przewagi."
         }
     }
 }

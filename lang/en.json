@@ -1,17 +1,23 @@
 {
     "IMPMAL-COMBAT-RESOLVE": {
         "SETTINGS": {
-            "sentToChat": "Send to chat?",
+            "sentToChat": "Send to chat",
             "sentToChatHint": "If disabled, notification will be used instead.",
             "showNPCBelowSuperiority": "Display NPCs tokens",
-            "showNPCBelowSuperiorityHint": "Works only when `Send to Chat?` enabled. Will display clickable tokens of Troops whose Resolve is equal to or lower than Superiority. Doesn't count Elites or Leaders.",
+            "showNPCBelowSuperiorityHint": "Works only when `Send to Chat` enabled for Superiority. Will display clickable token.",
             "chatVisibility": "Chat Visibility",
-            "chatVisibilityHint": "Works only when `Send to Chat?` enabled.",
+            "chatVisibilityHint": "Works only when `Send to Chat` enabled.",
             "chatVisibilityPublic": "Public",
             "chatVisibilityPrivate": "Private",
-            "countTroops": "Count Troops?",
-            "countElites": "Count Elites?",
-            "countLeaders": "Count Leaders?"
+            "countTroops": "Count Troops",
+            "countElites": "Count Elites",
+            "countLeaders": "Count Leaders",
+            "sentToChatNothing": "Nothing",
+            "sentToChatCounters": "Only Counters checks",
+            "sentToChatOnSuperiority": "Only Superiority checks",
+            "sentToChatOnCountersAndSuperiority": "Both Counters and Superiority checks",
+            "checkSuperiority": "Check Superiority",
+            "checkSuperiorityHint": "Checks if combatant is below or at Superiority treshold at the turn start."
         },
         "MESSAGES": {
             "inLastRound": "In last round:",
@@ -19,7 +25,9 @@
             "elitesDefeated": "Elites were defeated.",
             "leadersDefeated": "Leaders were defeated.",
             "lastRoundSummary": "Last Round Summary",
-            "troopsWithLowerResolve": "Troops with Resolve equal to or lower than Superiority"
+            "newTurnSummary": "New Turn Summary",
+            "troopsWithLowerResolve": "Troops with Resolve equal to or lower than Superiority",
+            "currentCombatant": "Resolve is equal to or lower than Superiority."
         }
     }
 }
