@@ -124,7 +124,7 @@ Hooks.on("init", () => {
         scope: 'world',
         config: true,
         type: String,
-        default: true,
+        default: 'private',
         choices: {
             private: "IMPMAL-COMBAT-RESOLVE.SETTINGS.chatVisibilityPrivate",
             public: "IMPMAL-COMBAT-RESOLVE.SETTINGS.chatVisibilityPublic",
