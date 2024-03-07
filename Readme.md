@@ -12,7 +12,7 @@ FoundryVTT module for the Imperium Maledictum system which handles Resolve in co
 
 ### FoundryVTT
 
-Install from manifest URL directly using [latest module.json](https://github.com/Kayne/impmal-combat-resolve/releases/latest/download/module.json).
+The package is available through the [module registry](https://foundryvtt.com/packages/impmal-combat-resolve) or installing from manifest URL directly using [latest module.json](https://github.com/Kayne/impmal-combat-resolve/releases/latest/download/module.json).
 
 ### Manually
 
