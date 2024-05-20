@@ -45,7 +45,7 @@ Hooks.on("combatRound", (combat) =>
 
     if (diffs.all() > 0) {
         const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
-        const highestLeaderResolve = Math.max( combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && ( a.actor.system.role === 'leader' || a.actor.system.role === 'troop' ) ).map( a => a.actor.system.combat.resolve ) );
+        const highestLeaderResolve = Math.max( combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && ( a.actor.system.role === 'leader' || a.actor.system.role === 'troop' ) ).map( a => a.actor.system.combat.resolve || 0 ) );
         if (sendToChat == 'on_counters' || sendToChat == 'on_counters_and_superiority') {
             // let restNpcs;
             // const showNPCBelowSuperiority = game.settings.get('impmal-combat-resolve','showNPCBelowSuperiority');
