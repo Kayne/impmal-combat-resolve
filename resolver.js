@@ -45,17 +45,19 @@ Hooks.on("combatRound", (combat) =>
 
     if (diffs.all() > 0) {
         const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
-        const highestLeaderResolve = Math.max( combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && ( a.actor.system.role === 'leader' || a.actor.system.role === 'troop' ) ).map( a => a.actor.system.combat.resolve || 0 ) );
+        const highestLeaderResolve = Math.max( ...combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && ( a.actor.system.role === 'leader' || a.actor.system.role === 'troop' ) ).map( a => a.actor.system.combat.resolve ) );
         if (sendToChat == 'on_counters' || sendToChat == 'on_counters_and_superiority') {
             // let restNpcs;
             // const showNPCBelowSuperiority = game.settings.get('impmal-combat-resolve','showNPCBelowSuperiority');
             // if (showNPCBelowSuperiority == 'on_round' || showNPCBelowSuperiority == 'on_round_and_turn') {
                 // restNpcs = combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && a.actor.system.role === 'troop' && a.actor.system.combat.resolve <= game.settings.get("impmal", "superiority") ).map( a => a.token );
             // }
-            ResolveMessage.postToChatOnRound( diffs, highestLeaderResolve );
+            ResolveMessage.postToChatOnRound( diffs, (highestLeaderResolve !== -Infinity ? highestLeaderResolve : null) );
         } else {
             let message = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.inLastRound');
-            message += " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.highestResolve') + " " + highestLeaderResolve + "."
+            if (highestLeaderResolve !== -Infinity) {
+                message += " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.highestResolve') + " " + highestLeaderResolve + "."
+            }
             if (diffs.troops > 0) {
                 message += " " + diffs.troops + " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.troopsDefeated');
             }
