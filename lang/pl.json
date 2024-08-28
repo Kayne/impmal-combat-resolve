@@ -17,7 +17,11 @@
             "sentToChatOnSuperiority": "Tylko Przewagę",
             "sentToChatOnCountersAndSuperiority": "Liczniki i Przewagę",
             "checkSuperiority": "Sprawdź Przewagę",
-            "checkSuperiorityHint": "Sprawadza, czy Determinacja przeciwnika, na początku jego tury, jest równa lub niższa od Przewagi."
+            "checkSuperiorityHint": "Sprawadza, czy Morale przeciwnika, na początku jego tury, jest równe lub niższe od Przewagi.",
+            "superiorityCheck": "Sprawdzenie Przewagi",
+            "superiorityCheckHint": "Zasada sprawdzania Przewagi",
+            "superiorityCheckEqualOrGreater": "Większe lub równe",
+            "superiorityCheckGreater": "Większe"
         },
         "MESSAGES": {
             "inLastRound": "W ostatniej rundzie:",
@@ -25,9 +29,9 @@
             "elitesDefeated": "Elit zostało pokonanych.",
             "leadersDefeated": "Liderów zostało pokonanych.",
             "lastRoundSummary": "Podsumowanie ostatniej rundy",
-            "troopsWithLowerResolve": "Trepy z Determinacją równą lub niższą od Przewagi",
-            "currentCombatant": "Determinacja jest równa lub niższa od Przewagi.",
-            "highestResolve": "Najwyższa Determinacja Trepa/Lidera:"
+            "currentCombatant": "Morale jest równe lub niższe od Przewagi.",
+            "currentCombatantGreater": "Morale jest niższe od Przewagi.",
+            "highestResolve": "Najwyższe Morale Trepa/Lidera:"
         }
     }
 }

@@ -17,7 +17,11 @@
             "sentToChatOnSuperiority": "Only Superiority",
             "sentToChatOnCountersAndSuperiority": "Both Counters and Superiority",
             "checkSuperiority": "Check Superiority",
-            "checkSuperiorityHint": "Checks if combatant is below or at Superiority treshold at the turn start."
+            "checkSuperiorityHint": "Checks if combatant is below or at Superiority treshold at the turn start.",
+            "superiorityCheck": "Superiority Check Mechanic",
+            "superiorityCheckHint": "Determines the Superiority check mechanic",
+            "superiorityCheckEqualOrGreater": "Equal Or Greater",
+            "superiorityCheckGreater": "Greater"
         },
         "MESSAGES": {
             "inLastRound": "In last round:",
@@ -26,8 +30,8 @@
             "leadersDefeated": "Leaders were defeated.",
             "lastRoundSummary": "Last Round Summary",
             "newTurnSummary": "New Turn Summary",
-            "troopsWithLowerResolve": "Troops with Resolve equal to or lower than Superiority",
             "currentCombatant": "Resolve is equal to or lower than Superiority.",
+            "currentCombatantGreater": "Resolve is lower than Superiority.",
             "highestResolve": "Highest Troop/Leader Resolve:"
         }
     }

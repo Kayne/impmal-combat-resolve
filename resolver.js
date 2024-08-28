@@ -82,12 +82,24 @@ Hooks.on("updateCombat", (combat, data) =>
         {
             if (game.settings.get('impmal-combat-resolve','showNPCBelowSuperiority')) {
                 const combatant = combat.combatant;
-                if (!combatant.isDefeated && combatant.actor.system.combat.resolve <= game.settings.get("impmal", "superiority")) {
+                let superiorityCheck = false;
+                let copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
+                switch (game.settings.get('impmal-combat-resolve','superiorityCheck')) {
+                    case 'equalOrGreater':
+                        superiorityCheck = combatant.actor.system.combat.resolve <= game.settings.get("impmal", "superiority");
+                        copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
+                        break;
+                    case 'greater':
+                        superiorityCheck = combatant.actor.system.combat.resolve < game.settings.get("impmal", "superiority");
+                        copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatantGreater');
+                        break;
+                }
+                if (!combatant.isDefeated && superiorityCheck) {
                     const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
                     if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
-                        ResolveMessage.postToChatOnTurn( combatant.token );
+                        ResolveMessage.postToChatOnTurn( combatant.token, copy );
                     } else {
-                        ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant') );
+                        ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + copy );
                     }
                 }
             }
@@ -166,6 +178,19 @@ Hooks.on("init", () => {
         default: true
     });
 
+    game.settings.register('impmal-combat-resolve', 'superiorityCheck', {
+        name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.superiorityCheck',
+        hint: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.superiorityCheckHint',
+        scope: 'world',
+        config: true,
+        type: String,
+        default: 'equalOrGreater',
+        choices: {
+            equalOrGreater: "IMPMAL-COMBAT-RESOLVE.SETTINGS.superiorityCheckEqualOrGreater",
+            greater: "IMPMAL-COMBAT-RESOLVE.SETTINGS.superiorityCheckGreater",
+        },
+    });
+
 });
 
 class ResolveMessage {
@@ -181,10 +206,11 @@ class ResolveMessage {
         this._postToChat( template_file, template_data );
     }
 
-    static postToChatOnTurn( npc ) {
+    static postToChatOnTurn( npc, copy ) {
         const template_file = "modules/impmal-combat-resolve/templates/on_turn.hbs";
         const template_data = {
-            npc: npc
+            npc: npc,
+            copy: copy
         };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
