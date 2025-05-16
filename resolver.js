@@ -63,12 +63,32 @@ Hooks.on("combatRound", (combat) => {
     }
 });
 
+Hooks.on("combatStart", (combat) => {
+    if (!game.user.isGM) return;
+    if (!game.settings.get('impmal-combat-resolve', 'checkSuperiority')) return;
+
+    const critsByCombatant = {};
+    for (const combatant of combat.combatants.filter( a => a.actor.type === 'character')) {
+        critsByCombatant[combatant.id] = combatant.actor?.system?.combat?.criticals?.value ?? 0;
+    }
+    game.combat.setFlag('impmal-combat-resolve', 'critics', critsByCombatant);
+});
+
 Hooks.on("updateCombat", (combat, data) => 
 {
     if (!game.user.isGM) return;
 
     if (!game.settings.get('impmal-combat-resolve', 'checkSuperiority')) return;
     if (data.turn === undefined && data.round === undefined) return;
+
+    const critsByCombatant = game.combat.getFlag('impmal-combat-resolve', 'critics') ?? {};
+    for (const combatant of combat.combatants.filter( a => a.actor.type === 'character')) {
+        if (critsByCombatant[combatant.id] !== null && critsByCombatant[combatant.id] < combatant.actor?.system?.combat?.criticals?.value) {
+            critsByCombatant[combatant.id] = null;
+            game.combat.setFlag('impmal-combat-resolve', 'critics', critsByCombatant);
+            ResolveMessage.postToChatOnDecreaseSuperiority(combatant.token);
+        }
+    }
 
     if (!game.settings.get('impmal-combat-resolve', 'showNPCBelowSuperiority')) return;
 
@@ -200,6 +220,12 @@ class ResolveMessage {
     static postToChatOnTurn( npc, copy ) {
         const template_file = "modules/impmal-combat-resolve/templates/on_turn.hbs";
         const template_data = { npc, copy };
+        this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
+    }
+
+    static postToChatOnDecreaseSuperiority( npc ) {
+        const template_file = "modules/impmal-combat-resolve/templates/decrease_superiority.hbs";
+        const template_data = { npc };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
 
