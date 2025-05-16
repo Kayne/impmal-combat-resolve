@@ -90,7 +90,7 @@ Hooks.on("updateCombat", (combat, data) =>
         }
     }
 
-    if (!game.settings.get('impmal-combat-resolve', 'showNPCBelowSuperiority')) return;
+    
 
     const combatant = combat.combatant;
     const superiority = game.settings.get("impmal", "superiority");
@@ -109,7 +109,11 @@ Hooks.on("updateCombat", (combat, data) =>
     if (!combatant.isDefeated && superiorityCheck) {
         const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
         if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
-            ResolveMessage.postToChatOnTurn( combatant.token, copy );
+            if (game.settings.get('impmal-combat-resolve', 'showNPCBelowSuperiority')) {
+                ResolveMessage.postToChatOnTurn( combatant.token, copy );
+            } else {
+                ResolveMessage.postToChatOnTurnNoToken( combatant.token, copy );
+            }
         } else {
             ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + copy );
         }
@@ -220,6 +224,12 @@ class ResolveMessage {
     static postToChatOnTurn( npc, copy ) {
         const template_file = "modules/impmal-combat-resolve/templates/on_turn.hbs";
         const template_data = { npc, copy };
+        this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
+    }
+
+    static postToChatOnTurnNoToken( npc, copy ) {
+        const template_file = "modules/impmal-combat-resolve/templates/on_turn.hbs";
+        const template_data = { copy };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
 
