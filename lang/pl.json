@@ -31,7 +31,9 @@
             "lastRoundSummary": "Podsumowanie ostatniej rundy",
             "currentCombatant": "Morale jest równe lub niższe od Przewagi.",
             "currentCombatantGreater": "Morale jest niższe od Przewagi.",
-            "highestResolve": "Najwyższe Morale Trepa/Lidera:"
+            "highestResolve": "Najwyższe Morale Trepa/Lidera:",
+            "decreaseSuperiority": "Pierwsza Rana Krytyczna w tym starciu, rozważ obniżenie Przewagi.",
+            "defeatedPC": "Postać Gracza pokonana, rozważ obniżenie Przewagi."
         }
     }
 }

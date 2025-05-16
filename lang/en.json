@@ -32,7 +32,9 @@
             "newTurnSummary": "New Turn Summary",
             "currentCombatant": "Resolve is equal to or lower than Superiority.",
             "currentCombatantGreater": "Resolve is lower than Superiority.",
-            "highestResolve": "Highest Troop/Leader Resolve:"
+            "highestResolve": "Highest Troop/Leader Resolve:",
+            "decreaseSuperiority": "First critical wound in this combat, consider decreasing Superiority.",
+            "defeatedPC": "PC defeated, consider decreasing Superiority."
         }
     }
 }

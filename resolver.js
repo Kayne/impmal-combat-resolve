@@ -72,6 +72,7 @@ Hooks.on("combatStart", (combat) => {
         critsByCombatant[combatant.id] = combatant.actor?.system?.combat?.criticals?.value ?? 0;
     }
     game.combat.setFlag('impmal-combat-resolve', 'critics', critsByCombatant);
+    game.combat.setFlag('impmal-combat-resolve', 'defeatedPC', []);
 });
 
 Hooks.on("updateCombat", (combat, data) => 
@@ -84,10 +85,27 @@ Hooks.on("updateCombat", (combat, data) =>
     const critsByCombatant = game.combat.getFlag('impmal-combat-resolve', 'critics') ?? {};
     const characterCombatants = combat.combatants.filter(a => a.actor.type === 'character');
     characterCombatants.forEach(combatant => {
+        // Check if new criticals were added
         if (critsByCombatant[combatant.id] !== null && critsByCombatant[combatant.id] < combatant.actor?.system?.combat?.criticals?.value) {
             critsByCombatant[combatant.id] = null;
             game.combat.setFlag('impmal-combat-resolve', 'critics', critsByCombatant);
             ResolveMessage.postToChatOnDecreaseSuperiority(combatant.token);
+        }
+
+        // Check if the combatant is defeated
+        const defeatedPC = game.combat.getFlag('impmal-combat-resolve', 'defeatedPC') ?? [];
+        if (combatant.isDefeated) {
+            if (defeatedPC.indexOf(combatant.id) === -1) {
+                defeatedPC.push(combatant.id);
+                game.combat.setFlag('impmal-combat-resolve', 'defeatedPC', defeatedPC);
+                ResolveMessage.postToChatOnDefeatedPC(combatant.token);
+            }
+        } else {
+            const index = defeatedPC.indexOf(combatant.id);
+            if (index !== -1) {
+                defeatedPC.splice(index, 1);
+                game.combat.setFlag('impmal-combat-resolve', 'defeatedPC', defeatedPC);
+            }
         }
     });
 
@@ -237,6 +255,13 @@ class ResolveMessage {
         const template_data = { npc };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
+
+    static postToChatOnDefeatedPC( npc ) {
+        const template_file = "modules/impmal-combat-resolve/templates/defeated_pc.hbs";
+        const template_data = { npc };
+        this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
+    }
+
 
     static async _postToChat( template_file, template_data, params = {} ) {
         const rendered_html = await renderTemplate(template_file, template_data);
