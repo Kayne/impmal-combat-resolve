@@ -91,7 +91,11 @@ Hooks.on("updateCombat", (combat, data) =>
             game.combat.setFlag('impmal-combat-resolve', 'critics', critsByCombatant);
             const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
             if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
-                ResolveMessage.postToChatOnDecreaseSuperiority(combatant.token);
+                if (game.settings.get('impmal-combat-resolve', 'showNPCBelowSuperiority')) {
+                    ResolveMessage.postToChatOnDecreaseSuperiority(combatant.token);
+                } else {
+                    ResolveMessage.postToChatOnDecreaseSuperiorityNoToken(combatant.token);
+                }
             } else {
                 ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.decreaseSuperiority') );
             }
@@ -105,7 +109,11 @@ Hooks.on("updateCombat", (combat, data) =>
                 game.combat.setFlag('impmal-combat-resolve', 'defeatedPC', defeatedPC);
                 const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
                 if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
-                    ResolveMessage.postToChatOnDefeatedPC(combatant.token);
+                    if (game.settings.get('impmal-combat-resolve', 'showNPCBelowSuperiority')) {
+                        ResolveMessage.postToChatOnDefeatedPC(combatant.token);
+                    } else {
+                        ResolveMessage.postToChatOnDefeatedPCNoToken(combatant.token);
+                    }
                 } else {
                     ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.defeatedPC') );
                 }
@@ -266,12 +274,17 @@ class ResolveMessage {
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
 
-    static postToChatOnDefeatedPC( npc ) {
-        const template_file = "modules/impmal-combat-resolve/templates/defeated_pc.hbs";
-        const template_data = { npc };
+    static postToChatOnDecreaseSuperiorityNoToken( npc ) {
+        const template_file = "modules/impmal-combat-resolve/templates/decrease_superiority.hbs";
+        const template_data = { };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
 
+    static postToChatOnDefeatedPCNoToken( npc ) {
+        const template_file = "modules/impmal-combat-resolve/templates/defeated_pc.hbs";
+        const template_data = { };
+        this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
+    }
 
     static async _postToChat( template_file, template_data, params = {} ) {
         const rendered_html = await renderTemplate(template_file, template_data);

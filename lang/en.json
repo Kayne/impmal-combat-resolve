@@ -3,7 +3,7 @@
         "SETTINGS": {
             "sentToChat": "Send to chat",
             "sentToChatHint": "If disabled, notification will be used instead.",
-            "showNPCBelowSuperiority": "Display NPCs tokens",
+            "showNPCBelowSuperiority": "Display tokens",
             "showNPCBelowSuperiorityHint": "Works only when `Send to Chat` enabled for Superiority. Will display clickable token.",
             "chatVisibility": "Chat Visibility",
             "chatVisibilityHint": "Works only when `Send to Chat` enabled.",

@@ -3,7 +3,7 @@
         "SETTINGS": {
             "sentToChat": "Wysyłać do Czatu",
             "sentToChatHint": "Jesli wyłączone, wiadomości pojawią się w powiadomieniach.",
-            "showNPCBelowSuperiority": "Wyświetl tokeny Bohaterów Niezalenych",
+            "showNPCBelowSuperiority": "Wyświetl tokeny",
             "showNPCBelowSuperiorityHint": "Działa tylko z włączoną opcją `Wysyłać do Czatu`. Wyświetla klikalny token.",
             "chatVisibility": "Widoczność w Czacie",
             "chatVisibilityHint": "Działa tylko z włączoną opcją `Wysyłać do Czatu`.",
