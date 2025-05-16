@@ -82,15 +82,14 @@ Hooks.on("updateCombat", (combat, data) =>
     if (data.turn === undefined && data.round === undefined) return;
 
     const critsByCombatant = game.combat.getFlag('impmal-combat-resolve', 'critics') ?? {};
-    for (const combatant of combat.combatants.filter( a => a.actor.type === 'character')) {
+    const characterCombatants = combat.combatants.filter(a => a.actor.type === 'character');
+    characterCombatants.forEach(combatant => {
         if (critsByCombatant[combatant.id] !== null && critsByCombatant[combatant.id] < combatant.actor?.system?.combat?.criticals?.value) {
             critsByCombatant[combatant.id] = null;
             game.combat.setFlag('impmal-combat-resolve', 'critics', critsByCombatant);
             ResolveMessage.postToChatOnDecreaseSuperiority(combatant.token);
         }
-    }
-
-    
+    });
 
     const combatant = combat.combatant;
     const superiority = game.settings.get("impmal", "superiority");
