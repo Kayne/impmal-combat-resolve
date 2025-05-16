@@ -1,62 +1,53 @@
-Hooks.on("combatRound", (combat) => 
-{
-    if (!game.user.isGM) {
-        return;
-    }
-    let currentDefeated = combat.combatants.filter( a => a.isDefeated && a.actor.type === 'npc' );
+Hooks.on("combatRound", (combat) => {
+    if (!game.user.isGM) return;
 
-    const countElites = game.settings.get('impmal-combat-resolve','countElites');
-    const countLeaders = game.settings.get('impmal-combat-resolve','countLeaders');
-    const countTroops = game.settings.get('impmal-combat-resolve','countTroops');
+    const currentDefeated = combat.combatants.filter(a => a.isDefeated && a.actor.type === 'npc');
+    const settings = {
+        countElites: game.settings.get('impmal-combat-resolve', 'countElites'),
+        countLeaders: game.settings.get('impmal-combat-resolve', 'countLeaders'),
+        countTroops: game.settings.get('impmal-combat-resolve', 'countTroops')
+    };
 
     const diffs = {
         troops: 0,
         elites: 0,
         leaders: 0,
-        all: function() {
+        all() {
             return this.troops + this.elites + this.leaders;
         }
+    };
+
+    function countDefeated(role) {
+        return currentDefeated.filter(a => a.actor.system.role === role).length;
     }
 
-    if (countTroops) {
-        const defeatedTrops = currentDefeated.map( a => a.actor.system.role === 'troop' ).filter( a => a == true ).length;
-        diffs.troops = defeatedTrops - (game.combat.getFlag( 'impmal-combat-resolve', 'previousDefeatedTroops' ) ?? 0);
-        if (diffs.troops < 0) {
-            diffs.troops = 0;
-        }
-        game.combat.setFlag( 'impmal-combat-resolve', 'previousDefeatedTroops', defeatedTrops );
+    function updateDiff(role, flag) {
+        const defeated = countDefeated(role);
+        const prev = game.combat.getFlag('impmal-combat-resolve', flag) ?? 0;
+        let diff = defeated - prev;
+        if (diff < 0) diff = 0;
+        game.combat.setFlag('impmal-combat-resolve', flag, defeated);
+        return diff;
     }
-    if (countElites) {
-        const defeatedElites = currentDefeated.map( a => a.actor.system.role === 'elite' ).filter( a => a == true ).length;
-        diffs.elites = defeatedElites - (game.combat.getFlag( 'impmal-combat-resolve', 'previousDefeatedElites' ) ?? 0);
-        if (diffs.elites < 0) {
-            diffs.elites = 0;
-        }
-        game.combat.setFlag( 'impmal-combat-resolve', 'previousDefeatedElites', defeatedElites );
-    }
-    if (countLeaders) {
-        const defeatedLeaders = currentDefeated.map( a => a.actor.system.role === 'leader' ).filter( a => a == true ).length;
-        diffs.leaders = defeatedLeaders - (game.combat.getFlag( 'impmal-combat-resolve', 'previousDefeatedLeaders' ) ?? 0);
-        if (diffs.leaders < 0) {
-            diffs.leaders = 0;
-        }
-        game.combat.setFlag( 'impmal-combat-resolve', 'previousDefeatedLeaders', defeatedLeaders );
-    }
+
+    if (settings.countTroops) diffs.troops = updateDiff('troop', 'previousDefeatedTroops');
+    if (settings.countElites) diffs.elites = updateDiff('elite', 'previousDefeatedElites');
+    if (settings.countLeaders) diffs.leaders = updateDiff('leader', 'previousDefeatedLeaders');
 
     if (diffs.all() > 0) {
-        const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
-        const highestLeaderResolve = Math.max( ...combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && ( a.actor.system.role === 'leader' || a.actor.system.role === 'troop' ) ).map( a => a.actor.system.combat.resolve ) );
-        if (sendToChat == 'on_counters' || sendToChat == 'on_counters_and_superiority') {
-            // let restNpcs;
-            // const showNPCBelowSuperiority = game.settings.get('impmal-combat-resolve','showNPCBelowSuperiority');
-            // if (showNPCBelowSuperiority == 'on_round' || showNPCBelowSuperiority == 'on_round_and_turn') {
-                // restNpcs = combat.combatants.filter( a => !a.isDefeated && a.actor.type === 'npc' && a.actor.system.role === 'troop' && a.actor.system.combat.resolve <= game.settings.get("impmal", "superiority") ).map( a => a.token );
-            // }
-            ResolveMessage.postToChatOnRound( diffs, (highestLeaderResolve !== -Infinity ? highestLeaderResolve : null) );
+        const sendToChat = game.settings.get('impmal-combat-resolve', 'sendToChat');
+        const activeNpcs = combat.combatants.filter(a =>
+            !a.isDefeated && a.actor.type === 'npc' &&
+            (a.actor.system.role === 'leader' || a.actor.system.role === 'troop')
+        );
+        const highestLeaderResolve = Math.max(...activeNpcs.map(a => a.actor.system.combat.resolve), -Infinity);
+
+        if (sendToChat === 'on_counters' || sendToChat === 'on_counters_and_superiority') {
+            ResolveMessage.postToChatOnRound(diffs, highestLeaderResolve !== -Infinity ? highestLeaderResolve : null);
         } else {
             let message = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.inLastRound');
             if (highestLeaderResolve !== -Infinity) {
-                message += " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.highestResolve') + " " + highestLeaderResolve + "."
+                message += " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.highestResolve') + " " + highestLeaderResolve + ".";
             }
             if (diffs.troops > 0) {
                 message += " " + diffs.troops + " " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.troopsDefeated');
@@ -74,41 +65,41 @@ Hooks.on("combatRound", (combat) =>
 
 Hooks.on("updateCombat", (combat, data) => 
 {
-    if (!game.user.isGM) {
-        return;
+    if (!game.user.isGM) return;
+
+    if (!game.settings.get('impmal-combat-resolve', 'checkSuperiority')) return;
+    if (data.turn === undefined && data.round === undefined) return;
+
+    if (!game.settings.get('impmal-combat-resolve', 'showNPCBelowSuperiority')) return;
+
+    const combatant = combat.combatant;
+    const superiority = game.settings.get("impmal", "superiority");
+    let superiorityCheck = false;
+    let copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
+    switch (game.settings.get('impmal-combat-resolve','superiorityCheck')) {
+        case 'equalOrGreater':
+            superiorityCheck = combatant.actor.system.combat.resolve <= superiority;
+            copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
+            break;
+        case 'greater':
+            superiorityCheck = combatant.actor.system.combat.resolve < superiority;
+            copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatantGreater');
+            break;
     }
-    if (game.settings.get('impmal-combat-resolve','checkSuperiority')) {
-        if (data.turn !== undefined || data.round !== undefined) // If switching turns or rounds, doesn't matter the direction
-        {
-            if (game.settings.get('impmal-combat-resolve','showNPCBelowSuperiority')) {
-                const combatant = combat.combatant;
-                let superiorityCheck = false;
-                let copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
-                switch (game.settings.get('impmal-combat-resolve','superiorityCheck')) {
-                    case 'equalOrGreater':
-                        superiorityCheck = combatant.actor.system.combat.resolve <= game.settings.get("impmal", "superiority");
-                        copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
-                        break;
-                    case 'greater':
-                        superiorityCheck = combatant.actor.system.combat.resolve < game.settings.get("impmal", "superiority");
-                        copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatantGreater');
-                        break;
-                }
-                if (!combatant.isDefeated && superiorityCheck) {
-                    const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
-                    if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
-                        ResolveMessage.postToChatOnTurn( combatant.token, copy );
-                    } else {
-                        ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + copy );
-                    }
-                }
-            }
+    if (!combatant.isDefeated && superiorityCheck) {
+        const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
+        if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
+            ResolveMessage.postToChatOnTurn( combatant.token, copy );
+        } else {
+            ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + copy );
         }
     }
 });
 
 Hooks.on("init", () => {
-    game.settings.register('impmal-combat-resolve', 'sendToChat', {
+    const registerSetting = (key, data) => game.settings.register('impmal-combat-resolve', key, data);
+
+    registerSetting( 'sendToChat', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.sentToChat',
         hint: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.sentToChatHint',
         scope: 'world',
@@ -123,7 +114,7 @@ Hooks.on("init", () => {
         }
     });
 
-    game.settings.register('impmal-combat-resolve', 'showNPCBelowSuperiority', {
+    registerSetting( 'showNPCBelowSuperiority', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.showNPCBelowSuperiority',
         hint: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.showNPCBelowSuperiorityHint',
         scope: 'world',
@@ -132,7 +123,7 @@ Hooks.on("init", () => {
         default: true
     });
 
-    game.settings.register('impmal-combat-resolve', 'chatVisibility', {
+    registerSetting( 'chatVisibility', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.chatVisibility',
         hint: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.chatVisibilityHint',
         scope: 'world',
@@ -145,7 +136,7 @@ Hooks.on("init", () => {
         },
     });
 
-    game.settings.register('impmal-combat-resolve', 'countTroops', {
+    registerSetting( 'countTroops', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.countTroops',
         scope: 'world',
         config: true,
@@ -153,7 +144,7 @@ Hooks.on("init", () => {
         default: true
     });
 
-    game.settings.register('impmal-combat-resolve', 'countElites', {
+    registerSetting( 'countElites', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.countElites',
         scope: 'world',
         config: true,
@@ -161,7 +152,7 @@ Hooks.on("init", () => {
         default: true
     });
 
-    game.settings.register('impmal-combat-resolve', 'countLeaders', {
+    registerSetting( 'countLeaders', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.countLeaders',
         scope: 'world',
         config: true,
@@ -169,7 +160,7 @@ Hooks.on("init", () => {
         default: true
     });
 
-    game.settings.register('impmal-combat-resolve', 'checkSuperiority', {
+    registerSetting( 'checkSuperiority', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.checkSuperiority',
         hint: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.checkSuperiorityHint',
         scope: 'world',
@@ -178,7 +169,7 @@ Hooks.on("init", () => {
         default: true
     });
 
-    game.settings.register('impmal-combat-resolve', 'superiorityCheck', {
+    registerSetting( 'superiorityCheck', {
         name: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.superiorityCheck',
         hint: 'IMPMAL-COMBAT-RESOLVE.SETTINGS.superiorityCheckHint',
         scope: 'world',
@@ -208,10 +199,7 @@ class ResolveMessage {
 
     static postToChatOnTurn( npc, copy ) {
         const template_file = "modules/impmal-combat-resolve/templates/on_turn.hbs";
-        const template_data = {
-            npc: npc,
-            copy: copy
-        };
+        const template_data = { npc, copy };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
 
