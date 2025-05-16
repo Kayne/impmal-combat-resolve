@@ -89,7 +89,12 @@ Hooks.on("updateCombat", (combat, data) =>
         if (critsByCombatant[combatant.id] !== null && critsByCombatant[combatant.id] < combatant.actor?.system?.combat?.criticals?.value) {
             critsByCombatant[combatant.id] = null;
             game.combat.setFlag('impmal-combat-resolve', 'critics', critsByCombatant);
-            ResolveMessage.postToChatOnDecreaseSuperiority(combatant.token);
+            const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
+            if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
+                ResolveMessage.postToChatOnDecreaseSuperiority(combatant.token);
+            } else {
+                ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.decreaseSuperiority') );
+            }
         }
 
         // Check if the combatant is defeated
@@ -98,7 +103,12 @@ Hooks.on("updateCombat", (combat, data) =>
             if (defeatedPC.indexOf(combatant.id) === -1) {
                 defeatedPC.push(combatant.id);
                 game.combat.setFlag('impmal-combat-resolve', 'defeatedPC', defeatedPC);
-                ResolveMessage.postToChatOnDefeatedPC(combatant.token);
+                const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
+                if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
+                    ResolveMessage.postToChatOnDefeatedPC(combatant.token);
+                } else {
+                    ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.defeatedPC') );
+                }
             }
         } else {
             const index = defeatedPC.indexOf(combatant.id);
