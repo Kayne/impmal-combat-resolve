@@ -86,12 +86,12 @@ Hooks.on("updateCombat", (combat, data) =>
     const sendToChat = game.settings.get('impmal-combat-resolve', 'sendToChat');
     const showNPC = game.settings.get('impmal-combat-resolve', 'showNPCBelowSuperiority');
 
-    function notifyOrChat(type, combatant, messageKey) {
+    function notifyOrChat(type, combatant, messageKey, localizedMessage) {
         if (sendToChat === 'on_superiority' || sendToChat === 'on_counters_and_superiority') {
             if (showNPC) {
-                ResolveMessage[type](combatant.token);
+                ResolveMessage[type](combatant.token, localizedMessage);
             } else {
-                ResolveMessage[type + 'NoToken'](combatant.token);
+                ResolveMessage[type + 'NoToken'](combatant.token, localizedMessage);
             }
         } else {
             const name = combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name;
@@ -126,27 +126,18 @@ Hooks.on("updateCombat", (combat, data) =>
     const combatant = combat.combatant;
     const superiority = game.settings.get("impmal", "superiority");
     let superiorityCheck = false;
-    let copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
+    let localizedMessage = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatant');
     switch (game.settings.get('impmal-combat-resolve','superiorityCheck')) {
         case 'equalOrGreater':
             superiorityCheck = combatant.actor.system.combat.resolve <= superiority;
             break;
         case 'greater':
             superiorityCheck = combatant.actor.system.combat.resolve < superiority;
-            copy = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatantGreater');
+            localizedMessage = game.i18n.localize('IMPMAL-COMBAT-RESOLVE.MESSAGES.currentCombatantGreater');
             break;
     }
     if (!combatant.isDefeated && superiorityCheck) {
-        const sendToChat = game.settings.get('impmal-combat-resolve','sendToChat');
-        if (sendToChat == 'on_superiority' || sendToChat == 'on_counters_and_superiority') {
-            if (showNPC) {
-                ResolveMessage.postToChatOnTurn( combatant.token, copy );
-            } else {
-                ResolveMessage.postToChatOnTurnNoToken( combatant.token, copy );
-            }
-        } else {
-            ui.notifications.info( (combatant.actor.token ? combatant.actor.token.name : combatant.actor.prototypeToken.name) + ": " + copy );
-        }
+        notifyOrChat('postToChatOnTurn', combatant, localizedMessage, localizedMessage);
     }
 });
 
@@ -251,15 +242,15 @@ class ResolveMessage {
         this._postToChat( template_file, template_data );
     }
 
-    static postToChatOnTurn( npc, copy ) {
+    static postToChatOnTurn( npc, localizedMessage ) {
         const template_file = "modules/impmal-combat-resolve/templates/on_turn.hbs";
-        const template_data = { npc, copy };
+        const template_data = { npc, localizedMessage };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
 
-    static postToChatOnTurnNoToken( npc, copy ) {
+    static postToChatOnTurnNoToken( npc, localizedMessage ) {
         const template_file = "modules/impmal-combat-resolve/templates/on_turn.hbs";
-        const template_data = { copy };
+        const template_data = { localizedMessage };
         this._postToChat( template_file, template_data, { speaker: { alias: npc.name } } );
     }
 
